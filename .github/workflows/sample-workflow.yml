@@ -1,17 +1,31 @@
 name: Hello for All Envs
 
+# on:
+#   schedule:
+#     - cron: '*/5 * * * *'  # Every 5 minutes
+
+# jobs:
+#   say_hello:
+#     runs-on: ubuntu-latest
+#     strategy:
+#       matrix:
+#         environment: [dev, qa, stage, prod]  # Define your environments here
+
+#     steps:
+#       - name: Say Hello
+#         run: echo "Hello from ${{ matrix.environment }} environment!"
+
 on:
   schedule:
-    - cron: "*/5 * * * *"  # Every 5 minutes
-  workflow_dispatch:
+    - cron: '*/5 * * * *'
 
 jobs:
-  say_hello:
+  test_schedule:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        environment: [dev, qa, stage, prod]  # Define your environments here
-
     steps:
-      - name: Say Hello
-        run: echo "Hello from ${{ matrix.environment }} environment!"
+      - name: Not on Monday or Wednesday
+        if: github.event.schedule != '30 5 * * 1,3'
+        run: echo "This step will be skipped on Monday and Wednesday"
+      - name: Every time
+        run: echo "This step will always run"
+
