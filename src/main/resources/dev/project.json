@@ -9,7 +9,7 @@
                 "owner",
                 "reader"
             ],
-            "name": "test-project-ef-internal-04"
+            "name": "test-project-ef-internal-05"
         }
     ],
     "description": "For exploring",
@@ -28,7 +28,7 @@
     "productGroup": "internal",
     "costCenterId": 131000,
     "geography": "apac",
-    "name": "test-project-ef-internal-04",
+    "name": "test-project-ef-internal-05",
     "moduleKey": "ef-dev",
     "customer": "internal"
 }

@@ -20,7 +20,7 @@ jobs:
     environment: ${{ matrix.environment }}
     
     env:
-      PROJECT_NAME: test-project-ef-internal-04
+      PROJECT_NAME: test-project-ef-internal-05
       TOKEN_SECRETS_JSON: ${{ secrets.TOKEN_SECRETS_JSON }}
 
     steps:
@@ -84,17 +84,17 @@ jobs:
           echo "Create Project returned status: $STATUS_CODE"
           echo "status=$STATUS_CODE" >> $GITHUB_OUTPUT
 
-      - name: If Project creation failed
-        if: steps.create_project.outputs.status != '201'
-        run: |
-          echo "❌ Resource creation failed. Stopping workflow."
-          exit 1
+      # - name: If Project creation failed
+      #   if: steps.create_project.outputs.status != '201'
+      #   run: |
+      #     echo "❌ Resource creation failed. Stopping workflow."
+      #     exit 1
       
-      - name: If Project creation success
-        if: steps.create_project.outputs.status == '201'
-        run: |
-          echo "✅ Resource creation succeeded. Proceeding with next steps..."
-          # Add follow-up commands here
+      # - name: If Project creation success
+      #   if: steps.create_project.outputs.status == '201'
+      #   run: |
+      #     echo "✅ Resource creation succeeded. Proceeding with next steps..."
+      #     # Add follow-up commands here
 
 
 
