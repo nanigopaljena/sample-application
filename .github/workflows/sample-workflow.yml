@@ -74,14 +74,14 @@ jobs:
         shell: bash
         run: |
           RESOURCE_URL="$EFS_HOST/eventservice/controller/v1/project"
-          #REQUEST_BODY=$(jq -c . < src/main/resources/request.json)
-          #echo "Request body is: $REQUEST_BODY"
+          REQUEST_BODY=$(jq -c . < src/main/resources/request.json)
+          echo "Request body is: $REQUEST_BODY"
           echo "Resource not found. Creating..."
 
           curl -X POST "$RESOURCE_URL" \
             -H "Authorization: Bearer $ACCESS_TOKEN" \
             -H "Content-Type: application/json" \
-            -d @src/main/resources/project.json
+            -d "$REQUEST_BODY"
 
       - name: If Project creation failed
         if: steps.create_project.outputs.status != '201'
