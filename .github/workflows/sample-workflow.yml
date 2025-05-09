@@ -55,7 +55,7 @@ jobs:
           id: get_project
           shell: bash
           run: |
-            RESOURCE_URL="$EFS_HOST/eventservice/controller/v1/projects/test-project-ef-internal-03"
+            RESOURCE_URL="$test.com/eventservice/controller/v1/projects/test-project-ef-internal-03"
             echo "URL for get call: $RESOURCE_URL"
             echo "Checking if resource exists..."
             STATUS_CODE=$(curl -s -o response.json -w "%{http_code}" -X GET "$RESOURCE_URL" \
