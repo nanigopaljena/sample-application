@@ -81,7 +81,7 @@ jobs:
           curl -X POST "$RESOURCE_URL" \
             -H "Authorization: Bearer $ACCESS_TOKEN" \
             -H "Content-Type: application/json" \
-            -d @src/main/resources/project.json'
+            -d @src/main/resources/project.json
 
       - name: If Project creation failed
         if: steps.create_project.outputs.status != '201'
