@@ -12,8 +12,35 @@ jobs:
       matrix:
         environment: [dev, qa, stage, prod]  # Define your environments here
 
+    environment: ${{ matrix.environment }}
+    
     steps:
-      - name: Say Hello
-        run: echo "Hello from ${{ matrix.environment }} environment!"
+      - name: Fetch token for ${{ matrix.environment }}
+        shell: bash
+        env:
+          TOKEN_SECRETS_JSON: ${{ secrets.TOKEN_SECRETS_JSON }}
+        run: |
+          echo "Processing environment: ${{ matrix.environment }}"
+
+          CLIENT_ID=$(echo "$TOKEN_SECRETS_JSON" | jq -r '.CLINET_ID')
+          CLIENT_SECRET=$(echo "$TOKEN_SECRETS_JSON" | jq -r '.CLIENT_SECRET')
+          SCOPE=$(echo "$TOKEN_SECRETS_JSON" | jq -r '.SCOPE')
+          TOKEN_URL=$(echo "$TOKEN_SECRETS_JSON" | jq -r '.TOKEN_URL')
+
+          echo "Calling token endpoint..."
+
+          RESPONSE=$(curl -s -X POST "$TOKEN_URL" \
+            -H 'Content-Type: application/x-www-form-urlencoded' \
+            -d "grant_type=client_credentials" \
+            -d "client_id=$CLIENT_ID" \
+            -d "client_secret=$CLIENT_SECRET" \
+            -d "scope=$SCOPE")
+
+          echo "Response:"
+          echo "$RESPONSE"
+
+          TOKEN=$(echo "$RESPONSE" | jq -r '.access_token')
+          echo "Access Token: $TOKEN"
+
 
 
