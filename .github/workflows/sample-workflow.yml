@@ -1,21 +1,22 @@
-name: Hello for All Envs
+name: Fetch Token for Each Env
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: '*/5 * * * *'
+    - cron: '*/5 * * * *'  # or use workflow_dispatch to test manually
+  
 
 jobs:
-  say_hello:
+  fetch_token:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        environment: [dev, qa, stage, prod]  # Define your environments here
+        environment: [dev, test]  # List all environments here
 
     environment: ${{ matrix.environment }}
-    
+
     steps:
-      - name: Fetch token for ${{ matrix.environment }}
+      - name: Fetch token from ${{ matrix.environment }}
         shell: bash
         env:
           TOKEN_SECRETS_JSON: ${{ secrets.TOKEN_SECRETS_JSON }}
@@ -41,6 +42,3 @@ jobs:
 
           TOKEN=$(echo "$RESPONSE" | jq -r '.access_token')
           echo "Access Token: $TOKEN"
-
-
-
