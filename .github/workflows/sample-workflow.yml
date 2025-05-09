@@ -68,7 +68,7 @@ jobs:
         if: steps.get_project.outputs.status == '404'
         shell: bash
         run: |
-          RESOURCE_URL="$EFS_HOST/eventservice/controller/v1/project
+          RESOURCE_URL="$EFS_HOST/eventservice/controller/v1/project"
           REQUEST_BODY=$(jq -c . < src/main/resources/request.json)
           echo "Request body is: $REQUEST_BODY"
           echo "Resource not found. Creating..."
