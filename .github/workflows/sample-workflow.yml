@@ -77,7 +77,7 @@ jobs:
           echo "Listing contents of src/main/resources:"
           ls -la ./src/main/resources || echo "Directory not found"
           RESOURCE_URL="$EFS_HOST/eventservice/controller/v1/project"
-          REQUEST_BODY=$(jq -c . < src/main/resources/project.json)
+          REQUEST_BODY=$(jq -c . < src/main/resources/dev/project.json)
           echo "Request body is: $REQUEST_BODY"
           echo "Resource not found. Creating..."
 
