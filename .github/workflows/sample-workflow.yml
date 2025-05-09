@@ -69,7 +69,8 @@ jobs:
         shell: bash
         run: |
           RESOURCE_URL="$EFS_HOST/eventservice/controller/v1/project
-
+          REQUEST_BODY=$(jq -c . < src/main/resources/request.json)
+          echo "Request body is: $REQUEST_BODY"
           echo "Resource not found. Creating..."
 
           curl -X POST "$RESOURCE_URL" \

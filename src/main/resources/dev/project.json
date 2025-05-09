@@ -9,7 +9,7 @@
                 "owner",
                 "reader"
             ],
-            "name": "{{projectName}}"
+            "name": "test-project-ef-internal-03"
         }
     ],
     "description": "For exploring",
