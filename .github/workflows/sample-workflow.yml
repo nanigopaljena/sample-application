@@ -16,6 +16,7 @@ jobs:
     
     env:
       PROJECT_NAME: test-project-ef-internal-03
+      TOKEN_SECRETS_JSON: ${{ secrets.TOKEN_SECRETS_JSON }}
 
     steps:
       - name: Checkout code
@@ -23,8 +24,6 @@ jobs:
 
       - name: Fetch token from ${{ matrix.environment }}
         shell: bash
-        env:
-          TOKEN_SECRETS_JSON: ${{ secrets.TOKEN_SECRETS_JSON }}
         run: |
           echo "Processing environment: ${{ matrix.environment }}"
 
@@ -32,8 +31,7 @@ jobs:
           CLIENT_SECRET=$(echo "$TOKEN_SECRETS_JSON" | jq -r '.CLIENT_SECRET')
           SCOPE=$(echo "$TOKEN_SECRETS_JSON" | jq -r '.SCOPE')
           TOKEN_URL=$(echo "$TOKEN_SECRETS_JSON" | jq -r '.TOKEN_URL')
-          EFS_URL=$(echo "$TOKEN_SECRETS_JSON" | jq -r '.TOKEN_URL')
-          HOST_URL=$(echo "$TOKEN_SECRETS_JSON" | jq -r '.HOST_URL')
+          EFS_HOST=$(echo "$TOKEN_SECRETS_JSON" | jq -r '.EFS_HOST')
           echo "EFS_HOST=$EFS_HOST" >> $GITHUB_ENV
 
           echo "Calling token endpoint..."
