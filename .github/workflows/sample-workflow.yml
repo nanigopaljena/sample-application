@@ -20,7 +20,7 @@ jobs:
     environment: ${{ matrix.environment }}
     
     env:
-      PROJECT_NAME: test-project-ef-internal-03
+      PROJECT_NAME: test-project-ef-internal-04
       TOKEN_SECRETS_JSON: ${{ secrets.TOKEN_SECRETS_JSON }}
 
     steps:
@@ -74,14 +74,15 @@ jobs:
         shell: bash
         run: |
           RESOURCE_URL="$EFS_HOST/eventservice/controller/v1/projects"
-          #REQUEST_BODY=$(jq -c . < src/main/resources/request.json)
-          #echo "Request body is: $REQUEST_BODY"
-          echo "Resource not found. Creating..."
+          echo "Project not found. Creating..."
 
-          curl -X POST "$RESOURCE_URL" \
+          STATUS_CODE=$(curl -X POST "$RESOURCE_URL" \
             -H "Authorization: Bearer $ACCESS_TOKEN" \
             -H "Content-Type: application/json" \
-            -d @src/main/resources/dev/project.json
+            -d @src/main/resources/dev/project.json)
+
+          echo "Create Project returned status: $STATUS_CODE"
+          echo "status=$STATUS_CODE" >> $GITHUB_OUTPUT
 
       - name: If Project creation failed
         if: steps.create_project.outputs.status != '201'
