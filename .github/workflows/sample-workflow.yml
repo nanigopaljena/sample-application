@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        environment: [dev, test]  # List all environments here
+        environment: [dev]  # List all environments here
 
     environment: ${{ matrix.environment }}
     
@@ -74,7 +74,7 @@ jobs:
         shell: bash
         run: |
           RESOURCE_URL="$EFS_HOST/eventservice/controller/v1/project"
-          REQUEST_BODY=$(jq -c . < src/main/resources/request.json)
+          REQUEST_BODY=$(jq -c . < src/main/resources/project.json)
           echo "Request body is: $REQUEST_BODY"
           echo "Resource not found. Creating..."
 
