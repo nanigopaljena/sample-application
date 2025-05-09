@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        environment: [dev]  # List all environments here
+        environment: [dev, test]  # List all environments here
 
     environment: ${{ matrix.environment }}
     
@@ -73,18 +73,15 @@ jobs:
         if: steps.get_project.outputs.status == '404'
         shell: bash
         run: |
-          echo "Current working directory: $(pwd)"
-          echo "Listing contents of src/main/resources:"
-          ls -la ./src/main/resources || echo "Directory not found"
-          RESOURCE_URL="$EFS_HOST/eventservice/controller/v1/project"
-          REQUEST_BODY=$(jq -c . < src/main/resources/dev/project.json)
-          echo "Request body is: $REQUEST_BODY"
+          RESOURCE_URL="$EFS_HOST/eventservice/controller/v1/projects"
+          #REQUEST_BODY=$(jq -c . < src/main/resources/request.json)
+          #echo "Request body is: $REQUEST_BODY"
           echo "Resource not found. Creating..."
 
           curl -X POST "$RESOURCE_URL" \
             -H "Authorization: Bearer $ACCESS_TOKEN" \
             -H "Content-Type: application/json" \
-            -d "$REQUEST_BODY"
+            -d @src/main/resources/dev/project.json
 
       - name: If Project creation failed
         if: steps.create_project.outputs.status != '201'
