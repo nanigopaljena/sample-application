@@ -73,10 +73,10 @@ jobs:
         if: steps.get_project.outputs.status == '404'
         shell: bash
         run: |
-          RESOURCE_URL="$EFS_HOST/eventservice/controller/v1/projects"
           echo "Project not found. Creating..."
-
-          STATUS_CODE=$(curl -X POST "$RESOURCE_URL" \
+          
+          RESOURCE_URL="$EFS_HOST/eventservice/controller/v1/projects"
+          STATUS_CODE=$(curl -s -o response.json -w "%{http_code}" -X POST "$RESOURCE_URL" \
             -H "Authorization: Bearer $ACCESS_TOKEN" \
             -H "Content-Type: application/json" \
             -d @src/main/resources/dev/project.json)
