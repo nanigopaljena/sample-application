@@ -1,14 +1,19 @@
 name: Hello for All Envs
 
-on:
+ on:
   workflow_dispatch:
   schedule:
-    - cron: '*/6 * * * *'
-
+    - cron: '*/5 * * * *'
+    
 jobs:
-  test_schedule:
+  say_hello:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        environment: [dev, qa, stage, prod]  # Define your environments here
+
     steps:
-      - name: Every time
-        run: echo "This step will always run"
+      - name: Say Hello
+        run: echo "Hello from ${{ matrix.environment }} environment!"
+
 
