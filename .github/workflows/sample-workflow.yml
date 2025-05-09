@@ -73,6 +73,9 @@ jobs:
         if: steps.get_project.outputs.status == '404'
         shell: bash
         run: |
+          echo "Current working directory: $(pwd)"
+          echo "Listing contents of src/main/resources:"
+          ls -la ./src/main/resources || echo "Directory not found"
           RESOURCE_URL="$EFS_HOST/eventservice/controller/v1/project"
           REQUEST_BODY=$(jq -c . < src/main/resources/project.json)
           echo "Request body is: $REQUEST_BODY"
