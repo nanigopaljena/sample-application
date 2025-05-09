@@ -14,8 +14,13 @@ jobs:
         environment: [dev, test]  # List all environments here
 
     environment: ${{ matrix.environment }}
+    env:
+      PROJECT_NAME: test-project-ef-internal-03
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Fetch token from ${{ matrix.environment }}
         shell: bash
         env:
@@ -27,6 +32,9 @@ jobs:
           CLIENT_SECRET=$(echo "$TOKEN_SECRETS_JSON" | jq -r '.CLIENT_SECRET')
           SCOPE=$(echo "$TOKEN_SECRETS_JSON" | jq -r '.SCOPE')
           TOKEN_URL=$(echo "$TOKEN_SECRETS_JSON" | jq -r '.TOKEN_URL')
+          EFS_URL=$(echo "$TOKEN_SECRETS_JSON" | jq -r '.TOKEN_URL')
+          HOST_URL=$(echo "$TOKEN_SECRETS_JSON" | jq -r '.HOST_URL')
+          echo "EFS_HOST=$EFS_HOST" >> $GITHUB_ENV
 
           echo "Calling token endpoint..."
 
@@ -41,4 +49,48 @@ jobs:
           echo "$RESPONSE"
 
           TOKEN=$(echo "$RESPONSE" | jq -r '.access_token')
-          echo "Access Token: $TOKEN"
+          echo "ACCESS_TOKEN=$TOKEN" >> $GITHUB_ENV
+
+      - name: Call GET endpoint to check resource
+          id: get_project
+          shell: bash
+          run: |
+            RESOURCE_URL="$EFS_HOST/eventservice/controller/v1/projects/$PROJECT_NAME"
+            
+            echo "Checking if resource exists..."
+            STATUS_CODE=$(curl -s -o response.json -w "%{http_code}" -X GET "$RESOURCE_URL" \
+              -H "Authorization: Bearer $ACCESS_TOKEN" \
+              -H "Accept: application/json")
+
+            echo "GET request returned status: $STATUS_CODE"
+            echo "status=$STATUS_CODE" >> $GITHUB_OUTPUT
+
+      - name: Create resource if not found (POST)
+        id: create_project
+        if: steps.get_project.outputs.status == '404'
+        shell: bash
+        run: |
+          RESOURCE_URL="$EFS_HOST/eventservice/controller/v1/project
+
+          echo "Resource not found. Creating..."
+
+          curl -X POST "$RESOURCE_URL" \
+            -H "Authorization: Bearer $ACCESS_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d @src/main/resources/project.json'
+
+      - name: If Project creation failed
+        if: steps.create_project.outputs.status != '201'
+        run: |
+          echo "❌ Resource creation failed. Stopping workflow."
+          exit 1
+      
+      - name: If Project creation success
+        if: steps.create_project.outputs.status == '201'
+        run: |
+          echo "✅ Resource creation succeeded. Proceeding with next steps..."
+          # Add follow-up commands here
+
+
+
+
