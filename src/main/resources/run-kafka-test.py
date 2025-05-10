@@ -367,6 +367,8 @@ def acked(err, msg):
 
 
 if __name__ == "__main__":
+    print("Args length: {len(sys.argv)}")
+    print("Args: {sys.argv}")
     if len(sys.argv) != 2:
         print("Usage: python test.py <EFS_HOST> <token> <SUBJECT_ID> <REALM_ID>")
         sys.exit(1)
