@@ -6,6 +6,7 @@ import time
 import json
 import socket
 
+from datetime import datetime, timezone
 from confluent_kafka import Producer, Consumer, KafkaException
 from oauthlib.oauth2 import BackendApplicationClient
 from requests_oauthlib import OAuth2Session
@@ -362,11 +363,17 @@ def acknowledge_message_send(err, msg):
     else:
         print(f"Message: {msg.value().decode('utf-8')} produced to topic successfully: {msg.topic()} in partition [{msg.partition()}] at offset {msg.offset()}")
 
+def get_current_utc_timestamp():
+    now_utc = datetime.now(timezone.utc)
+    return now_utc.strftime("%d-%m-%Y %H:%M:%S") + f":{now_utc.microsecond // 1000:03d}"
+
+
 if __name__ == "__main__":
     if len(sys.argv) != 3:
         print("Usage: python3 ef-health-check.py <CREDENTIALS_JSON>")
         sys.exit(1)
 
+    print(f"Run started at: {get_current_utc_timestamp()}")
     CREDENTIALS_JSON = sys.argv[1]
     ENV_NAME = sys.argv[2]
     set_globals_variables_from_json(CREDENTIALS_JSON)
@@ -376,4 +383,4 @@ if __name__ == "__main__":
     produce_message()
     print(f"Starting consumer....")
     consume_message()
-    print(f"Test completed....")
+    print(f"Run completed at: {get_current_utc_timestamp()}")
