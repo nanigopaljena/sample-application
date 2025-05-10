@@ -3,7 +3,7 @@ name: Fetch Token for Each Env
 on:
   push:
     branches:
-      - main
+      - test
 
 # on:
 #   workflow_dispatch:
@@ -15,13 +15,18 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        environment: [dev, test]  # List all environments here
+        environment: [dev]  # List all environments here
 
     environment: ${{ matrix.environment }}
     
     env:
-      PROJECT_NAME: test-project-ef-internal-05
       TOKEN_SECRETS_JSON: ${{ secrets.TOKEN_SECRETS_JSON }}
+      PROJECT_NAME: test-project-ef-internal-05
+      NAMESPACE_NAME: test-namespace-ef-internal-05
+      flag_1: false
+      flag_2: false
+      PROCEED_TO_TOPIC: false
+      
 
     steps:
       - name: Checkout code
@@ -54,48 +59,84 @@ jobs:
           TOKEN=$(echo "$RESPONSE" | jq -r '.access_token')
           echo "ACCESS_TOKEN=$TOKEN" >> $GITHUB_ENV
 
-      - name: Call GET endpoint to check resource
+      - name: Get project
         id: get_project
         shell: bash
         run: |
-          RESOURCE_URL="$EFS_HOST/eventservice/controller/v1/projects/$PROJECT_NAME"
+          PROJECT_URL="$EFS_HOST/eventservice/controller/v1/projects/$PROJECT_NAME"
           
-          echo "Checking if resource exists..."
-          STATUS_CODE=$(curl -s -o response.json -w "%{http_code}" -X GET "$RESOURCE_URL" \
+          echo "Checking if project exists..."
+
+          STATUS_CODE=$(curl -s -o response.json -w "%{http_code}" -X GET "$PROJECT_URL" \
             -H "Authorization: Bearer $ACCESS_TOKEN" \
             -H "Accept: application/json")
 
-          echo "GET request returned status: $STATUS_CODE"
+          echo "Get project returned status: $STATUS_CODE"
           echo "status=$STATUS_CODE" >> $GITHUB_OUTPUT
 
-      - name: Create resource if not found (POST)
+          if [ $STATUS_CODE=='200' ]; then
+            echo "flag_1=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create project if not found
         id: create_project
-        if: steps.get_project.outputs.status == '404'
+        if: $flag_1 == flase
         shell: bash
         run: |
           echo "Project not found. Creating..."
-          
-          RESOURCE_URL="$EFS_HOST/eventservice/controller/v1/projects"
-          STATUS_CODE=$(curl -s -o response.json -w "%{http_code}" -X POST "$RESOURCE_URL" \
+
+          PROJECT_URL="$EFS_HOST/eventservice/controller/v1/projects"
+          STATUS_CODE=$(curl -s -o response.json -w "%{http_code}" -X POST "$PROJECT_URL" \
             -H "Authorization: Bearer $ACCESS_TOKEN" \
             -H "Content-Type: application/json" \
             -d @src/main/resources/dev/project.json)
 
-          echo "Create Project returned status: $STATUS_CODE"
+          echo "Create project returned status: $STATUS_CODE"
           echo "status=$STATUS_CODE" >> $GITHUB_OUTPUT
 
-      # - name: If Project creation failed
-      #   if: steps.create_project.outputs.status != '201'
-      #   run: |
-      #     echo "❌ Resource creation failed. Stopping workflow."
-      #     exit 1
-      
-      # - name: If Project creation success
-      #   if: steps.create_project.outputs.status == '201'
-      #   run: |
-      #     echo "✅ Resource creation succeeded. Proceeding with next steps..."
-      #     # Add follow-up commands here
+          if [ $STATUS_CODE=='201' ]; then
+            echo "flag_1=true" >> $GITHUB_OUTPUT
+          fi
 
+      - name: Get Namespace
+        id: get_namespace
+        if: $flag_1 == true
+        shell: bash
+        run: |
+          PROJECT_URL="$EFS_HOST/eventservice/controller/v1/projects/$PROJECT_NAME/namespaces/$NAMESPACE_NAME"
+          
+          echo "Checking if namespace exists..."
+
+          STATUS_CODE=$(curl -s -o response.json -w "%{http_code}" -X GET "$PROJECT_URL" \
+            -H "Authorization: Bearer $ACCESS_TOKEN" \
+            -H "Accept: application/json")
+
+          echo "Get namespace returned status: $STATUS_CODE"
+          echo "status=$STATUS_CODE" >> $GITHUB_OUTPUT
+
+          if [ $STATUS_CODE=='200' ]; then
+            echo "flag_2=true" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Create Namespace if not found
+        id: create_namespace
+        if: $flag_1 == true && $flag_2 == false
+        shell: bash
+        run: |
+          echo "Namespace not found. Creating..."
+
+          PROJECT_URL="$EFS_HOST/eventservice/controller/v1/projects/$PROJECT_NAME/namespaces"
+          STATUS_CODE=$(curl -s -o response.json -w "%{http_code}" -X POST "$PROJECT_URL" \
+            -H "Authorization: Bearer $ACCESS_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d @src/main/resources/dev/namespace.json)
+
+          echo "Create namespace returned status: $STATUS_CODE"
+          echo "status=$STATUS_CODE" >> $GITHUB_OUTPUT
+
+          if [ $STATUS_CODE=='201' ]; then
+            echo "flag_2=true" >> $GITHUB_OUTPUT
+          fi
 
 
 

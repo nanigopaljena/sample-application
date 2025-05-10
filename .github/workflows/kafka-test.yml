@@ -1,0 +1,37 @@
+name: Fetch Token for Each Env
+
+on:
+  push:
+    branches:
+      - main
+
+# on:
+#   workflow_dispatch:
+#   schedule:
+#     - cron: '*/5 * * * *'  # or use workflow_dispatch to test manually
+  
+jobs:
+  fetch_token:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        environment: [dev]  # List all environments here
+
+    environment: ${{ matrix.environment }}
+    
+    env:
+      TOKEN_SECRETS_JSON: ${{ secrets.TOKEN_SECRETS_JSON }}
+      PROJECT_NAME: test-project-ef-internal-05
+      NAMESPACE_NAME: test-namespace-ef-internal-05
+      
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Test Kafka on ${{ matrix.environment }} env
+        run: |
+          ls
+          chmod +x run-kafka-test.py
+          python3 run-kafka-test.py $TOKEN_SECRETS_JSON
+        working-directory: ${{ github.workspace }}/src/main/resources
