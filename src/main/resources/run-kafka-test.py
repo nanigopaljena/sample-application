@@ -362,7 +362,7 @@ def acked(err, msg):
     if err is not None:
         print(f"Failed to deliver message: {msg.key() if msg.key() else 'No Key'}: {err}")
     else:
-        print(f"Message: {msg.value} produced to topic successfully: {msg.topic()} in partition [{msg.partition()}] at offset {msg.offset()}")
+        print(f"Message: {msg.value().decode('utf-8')} produced to topic successfully: {msg.topic()} in partition [{msg.partition()}] at offset {msg.offset()}")
 
 if __name__ == "__main__":
     print(f"Args length: {len(sys.argv)}")

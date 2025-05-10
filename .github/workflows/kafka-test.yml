@@ -41,7 +41,6 @@ jobs:
 
       - name: Test Kafka on ${{ matrix.environment }} env
         run: |
-          ls
           chmod +x run-kafka-test.py
           python3 run-kafka-test.py $TOKEN_SECRETS_JSON
         working-directory: ${{ github.workspace }}/src/main/resources
