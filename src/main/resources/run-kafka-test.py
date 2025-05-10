@@ -367,10 +367,10 @@ def acked(err, msg):
 
 
 if __name__ == "__main__":
-    print("Args length: {len(sys.argv)}")
-    print("Args: {sys.argv}")
+    print(f"Args length: {len(sys.argv)}")
+    print(f"Args: {sys.argv}")
     if len(sys.argv) != 2:
-        print("Usage: python test.py <EFS_HOST> <token> <SUBJECT_ID> <REALM_ID>")
+        print("Usage: python run-kafka-test.py <TOKEN_SECRETS_JSON>")
         sys.exit(1)
 
     JSON_CREDS = sys.argv[1]
