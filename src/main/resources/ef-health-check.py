@@ -376,3 +376,4 @@ if __name__ == "__main__":
     produce_message()
     print(f"Starting consumer....")
     consume_message()
+    print(f"Test completed....")
