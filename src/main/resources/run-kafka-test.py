@@ -365,7 +365,6 @@ def acked(err, msg):
     else:
         print(f"Message produced to topic successfully: {msg.topic()} in partition [{msg.partition()}] at offset {msg.offset()}")
 
-
 if __name__ == "__main__":
     print(f"Args length: {len(sys.argv)}")
     print(f"Args: {sys.argv}")
