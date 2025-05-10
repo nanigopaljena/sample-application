@@ -1,0 +1,34 @@
+{
+    "supplyChainVerticals": [
+        "PLATFORM"
+    ],
+    "realmId": "469b8843-60ed-4f70-a1b9-bfc97ad1061e",
+    "serviceAccounts": [
+        {
+            "roles": [
+                "owner",
+                "reader"
+            ],
+            "name": "test-project-ef-internal-07"
+        }
+    ],
+    "description": "For exploring",
+    "budgetCategory": "Luminate",
+    "teamEmail": "nanigopal.jena@jda.com",
+    "aadGroup": "test-event",
+    "team": "ef-dev",
+    "gitHubTeams": "dev",
+    "tags": [
+        "string"
+    ],
+    "environment": "dev",
+    "ownerGroups": [
+        "gopal"
+    ],
+    "productGroup": "internal",
+    "costCenterId": 131000,
+    "geography": "apac",
+    "name": "test-project-ef-internal-07",
+    "moduleKey": "ef-dev",
+    "customer": "internal"
+}

@@ -36,4 +36,4 @@ jobs:
         run: |
           chmod +x ef-health-check.py
           python3 ef-health-check.py $CREDENTIALS_JSON ${{ matrix.environment }}
-        working-directory: ${{ github.workspace }}/src/main/resources
+        working-directory: ${{ github.workspace }}/scripts
