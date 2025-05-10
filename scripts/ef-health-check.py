@@ -374,6 +374,7 @@ if __name__ == "__main__":
         sys.exit(1)
 
     print(f"Run started at: {get_current_utc_timestamp()}")
+    print(f"---------------------------------------------------")
     CREDENTIALS_JSON = sys.argv[1]
     ENV_NAME = sys.argv[2]
     set_globals_variables_from_json(CREDENTIALS_JSON)
@@ -383,4 +384,5 @@ if __name__ == "__main__":
     produce_message()
     print(f"Starting consumer....")
     consume_message()
+    print(f"---------------------------------------------------")
     print(f"Run completed at: {get_current_utc_timestamp()}")
