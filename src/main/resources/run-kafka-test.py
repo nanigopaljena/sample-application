@@ -27,6 +27,7 @@ INT_BOOTSTRAP_SERVER = None
 STOP_CONSUMER_AFTER_SECONDS = 10
 BOOTSTRAP_SERVER_CONNECTION_RETRY_COUNT = 5
 DELAY_IN_CONNECTION_RETRY = 1.0
+NUMBER_OF_MESSAGE_TO_PRODUCE = 2
 # logger = logging.getLogger("custom")
 
 def set_globals_from_json(json_str):
@@ -275,21 +276,20 @@ def produce():
         }
 
         bootstarp_server = config.get('bootstrap.servers')
-        print(f"Producing to: {bootstarp_server}")
 
         if(is_bootstarp_server_available(bootstarp_server)):
+            print(f"Producing to: {bootstarp_server}")
             try:
                 producer = Producer(producer_props)
-                for i in range(2):
+                for i in range(NUMBER_OF_MESSAGE_TO_PRODUCE):
                     data = f"Hello world!!! #{i+1}".encode("utf-8")
-                    print(f"Producing message: {data.decode('utf-8')}")
                     producer.produce(topic=f"{TOPIC_NAME}", value=data, on_delivery=acked)
                     producer.flush()
                     time.sleep(1)
             except Exception as e:
                 print(f"Error while producing: {e}")
             finally:
-                print("Producer closed after producing 5 messages.")
+                print(f"Producer closed after producing {NUMBER_OF_MESSAGE_TO_PRODUCE} messages.")
 
 def consume():
 
@@ -316,10 +316,9 @@ def consume():
         }
         
         bootstarp_server = config.get('bootstrap.servers')
-        print(f"Producing to: {bootstarp_server}")
 
         if(is_bootstarp_server_available(bootstarp_server)):
-            print(f"Consuming from: {config.get('bootstrap.servers')} with group id: {config.get('group.id')}")
+            print(f"Consuming from: {bootstarp_server} with group id: {config.get('group.id')}")
             consumer = Consumer(consumer_props)
             consumer.subscribe([f"{TOPIC_NAME}"])
             
@@ -363,7 +362,7 @@ def acked(err, msg):
     if err is not None:
         print(f"Failed to deliver message: {msg.key() if msg.key() else 'No Key'}: {err}")
     else:
-        print(f"Message produced to topic successfully: {msg.topic()} in partition [{msg.partition()}] at offset {msg.offset()}")
+        print(f"Message: {msg.value} produced to topic successfully: {msg.topic()} in partition [{msg.partition()}] at offset {msg.offset()}")
 
 if __name__ == "__main__":
     print(f"Args length: {len(sys.argv)}")
