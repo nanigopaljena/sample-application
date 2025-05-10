@@ -93,7 +93,7 @@ def create_project_if_not_found():
     full_url = EFS_HOST + DEFAULT_PATH
 
     try:
-        with open(f"./projects/{ENV_NAME}/health-check/project.json", "r") as f:
+        with open(f"../projects/{ENV_NAME}/health-check/project.json", "r") as f:
             payload = json.load(f)
 
         project_name = payload.get('name')
@@ -123,7 +123,7 @@ def create_namespace_if_not_found(project_name):
     try:
         full_url = EFS_HOST + DEFAULT_PATH
 
-        with open(f"./projects/{ENV_NAME}/health-check/namespace.json", "r") as f:
+        with open(f"../projects/{ENV_NAME}/health-check/namespace.json", "r") as f:
             payload = json.load(f)
 
         namespace_name = payload.get('name')
@@ -153,7 +153,7 @@ def create_topic_if_not_found(project_name, namespace_name):
     try:
         full_url = EFS_HOST + DEFAULT_PATH
 
-        with open(f"./projects/{ENV_NAME}/health-check/topic.json", "r") as f:
+        with open(f"../projects/{ENV_NAME}/health-check/topic.json", "r") as f:
             payload = json.load(f)
 
         topic_name = ge_topic_prefix(payload[0].get('type'), payload[0].get('entityOrEventName'))
@@ -217,7 +217,7 @@ def create_oauth_policy_if_not_found(project_name):
 def ge_topic_prefix(topic_type, entity_name):
     global EFS_HOST, token, SUBJECT_ID, REALM_ID, REQUEST_HEADER
     try:
-        with open(f"./projects/{ENV_NAME}/health-check/namespace.json", "r") as f:
+        with open(f"../projects/{ENV_NAME}/health-check/namespace.json", "r") as f:
             namespace = json.load(f)
 
         topic_prefix = namespace.get('topicNamePrefix', {})
