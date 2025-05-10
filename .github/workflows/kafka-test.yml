@@ -11,7 +11,7 @@ on:
     - cron: '*/15 * * * *'
   
 jobs:
-  start_kafka_test:
+  run_kafka_test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
