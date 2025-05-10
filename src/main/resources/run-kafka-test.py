@@ -28,7 +28,7 @@ STOP_CONSUMER_AFTER_SECONDS = 10
 BOOTSTRAP_SERVER_CONNECTION_RETRY_COUNT = 5
 DELAY_IN_CONNECTION_RETRY = 1.0
 NUMBER_OF_MESSAGE_TO_PRODUCE = 2
-ENV_NAME = dev
+ENV_NAME = None
 # logger = logging.getLogger("custom")
 
 def set_globals_from_json(json_str):
