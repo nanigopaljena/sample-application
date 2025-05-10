@@ -1,27 +1,22 @@
 name: Test Kafka connection on all envs
 
-# on:
-#   push:
-#     branches:
-#       - main
-
 on:
   workflow_dispatch:
   schedule:
-    - cron: '*/15 * * * *'
-  
+    - cron: '*/56 * * * *'
+
 jobs:
   run_kafka_test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        environment: [dev, test]  # List all environments here
+        environment: [dev, test]
     continue-on-error: true
 
     environment: ${{ matrix.environment }}
     
     env:
-      TOKEN_SECRETS_JSON: ${{ secrets.TOKEN_SECRETS_JSON }}
+      CREDENTIALS_JSON: ${{ secrets.CREDENTIALS_JSON }}
 
     steps:
       - name: Checkout code
@@ -30,7 +25,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10'  # or your preferred version
+          python-version: '3.10'
 
       - name: Install Python dependencies
         run: |
@@ -39,6 +34,6 @@ jobs:
 
       - name: Test Kafka functionality on ${{ matrix.environment }} env
         run: |
-          chmod +x run-kafka-test.py
-          python3 run-kafka-test.py $TOKEN_SECRETS_JSON ${{ matrix.environment }}
+          chmod +x ef-health-check.py
+          python3 ef-health-check.py $CREDENTIALS_JSON ${{ matrix.environment }}
         working-directory: ${{ github.workspace }}/src/main/resources
