@@ -89,7 +89,7 @@ def create_resources_if_not_found():
 
     try:
 
-        with open("{ENV_NAME}/project.json", "r") as f:
+        with open(f"{ENV_NAME}/project.json", "r") as f:
             payload = json.load(f)
 
         project_name = payload.get('name')
@@ -120,7 +120,7 @@ def createNameSpaceIfNotFound(project_name):
     try:
         full_url = EFS_HOST + DEFAULT_PATH  
 
-        with open("{ENV_NAME}/namespace.json", "r") as f:
+        with open(f"{ENV_NAME}/namespace.json", "r") as f:
             payload = json.load(f)
         
         namespace_name = payload.get('name')
@@ -150,7 +150,7 @@ def createTopicIfNotFound(project_name, namespace_name):
     try:
         full_url = EFS_HOST + DEFAULT_PATH  
 
-        with open("{ENV_NAME}/topic.json", "r") as f:
+        with open(f"{ENV_NAME}/topic.json", "r") as f:
             payload = json.load(f)
 
         topic_name = getTopicPrefix(payload[0].get('type'), payload[0].get('entityOrEventName'))
@@ -217,7 +217,7 @@ def createOauthPolicyIfNotFound(project_name):
 def getTopicPrefix(topic_type, entity_name):
     global EFS_HOST, token, SUBJECT_ID, REALM_ID, REQUEST_HEADER
     try:
-        with open("{ENV_NAME}/namespace.json", "r") as f:
+        with open(f"{ENV_NAME}/namespace.json", "r") as f:
             namespace = json.load(f)
 
         topic_prefix = namespace.get('topicNamePrefix', {})
