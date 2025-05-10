@@ -16,7 +16,7 @@ jobs:
     strategy:
       matrix:
         environment: [dev, test]  # List all environments here
-      continue-on-error: true
+    continue-on-error: true
 
     environment: ${{ matrix.environment }}
     
