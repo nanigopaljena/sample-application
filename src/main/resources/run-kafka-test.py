@@ -28,6 +28,7 @@ STOP_CONSUMER_AFTER_SECONDS = 10
 BOOTSTRAP_SERVER_CONNECTION_RETRY_COUNT = 5
 DELAY_IN_CONNECTION_RETRY = 1.0
 NUMBER_OF_MESSAGE_TO_PRODUCE = 2
+ENV_NAME = dev
 # logger = logging.getLogger("custom")
 
 def set_globals_from_json(json_str):
@@ -88,7 +89,7 @@ def create_resources_if_not_found():
 
     try:
 
-        with open("dev/project.json", "r") as f:
+        with open("{ENV_NAME}/project.json", "r") as f:
             payload = json.load(f)
 
         project_name = payload.get('name')
@@ -119,7 +120,7 @@ def createNameSpaceIfNotFound(project_name):
     try:
         full_url = EFS_HOST + DEFAULT_PATH  
 
-        with open("dev/namespace.json", "r") as f:
+        with open("{ENV_NAME}/namespace.json", "r") as f:
             payload = json.load(f)
         
         namespace_name = payload.get('name')
@@ -149,7 +150,7 @@ def createTopicIfNotFound(project_name, namespace_name):
     try:
         full_url = EFS_HOST + DEFAULT_PATH  
 
-        with open("dev/topic.json", "r") as f:
+        with open("{ENV_NAME}/topic.json", "r") as f:
             payload = json.load(f)
 
         topic_name = getTopicPrefix(payload[0].get('type'), payload[0].get('entityOrEventName'))
@@ -216,7 +217,7 @@ def createOauthPolicyIfNotFound(project_name):
 def getTopicPrefix(topic_type, entity_name):
     global EFS_HOST, token, SUBJECT_ID, REALM_ID, REQUEST_HEADER
     try:
-        with open("dev/namespace.json", "r") as f:
+        with open("{ENV_NAME}/namespace.json", "r") as f:
             namespace = json.load(f)
 
         topic_prefix = namespace.get('topicNamePrefix', {})
@@ -365,13 +366,12 @@ def acked(err, msg):
         print(f"Message: {msg.value().decode('utf-8')} produced to topic successfully: {msg.topic()} in partition [{msg.partition()}] at offset {msg.offset()}")
 
 if __name__ == "__main__":
-    print(f"Args length: {len(sys.argv)}")
-    print(f"Args: {sys.argv}")
-    if len(sys.argv) != 2:
+    if len(sys.argv) != 3:
         print("Usage: python run-kafka-test.py <TOKEN_SECRETS_JSON>")
         sys.exit(1)
 
     JSON_CREDS = sys.argv[1]
+    ENV_NAME = sys.argv[2]
     set_globals_from_json(JSON_CREDS)
     create_resources_if_not_found()
     print(f"Starting producer....")

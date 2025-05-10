@@ -1,29 +1,26 @@
-name: Fetch Token for Each Env
-
-on:
-  push:
-    branches:
-      - main
+name: Test Kafka connection on all envs
 
 # on:
-#   workflow_dispatch:
-#   schedule:
-#     - cron: '*/5 * * * *'  # or use workflow_dispatch to test manually
+#   push:
+#     branches:
+#       - main
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '*/15 * * * *'
   
 jobs:
   fetch_token:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        environment: [dev]  # List all environments here
+        environment: [dev, test]  # List all environments here
 
     environment: ${{ matrix.environment }}
     
     env:
       TOKEN_SECRETS_JSON: ${{ secrets.TOKEN_SECRETS_JSON }}
-      PROJECT_NAME: test-project-ef-internal-05
-      NAMESPACE_NAME: test-namespace-ef-internal-05
-      
 
     steps:
       - name: Checkout code
@@ -39,8 +36,8 @@ jobs:
           python -m pip install --upgrade pip
           pip install confluent-kafka requests requests-oauthlib
 
-      - name: Test Kafka on ${{ matrix.environment }} env
+      - name: Test Kafka functionality on ${{ matrix.environment }} env
         run: |
           chmod +x run-kafka-test.py
-          python3 run-kafka-test.py $TOKEN_SECRETS_JSON
+          python3 run-kafka-test.py $TOKEN_SECRETS_JSON ${{ matrix.environment }}
         working-directory: ${{ github.workspace }}/src/main/resources
